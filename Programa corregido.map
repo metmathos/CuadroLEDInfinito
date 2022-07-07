@@ -1,0 +1,74 @@
+MPLINK 4.45, Linker
+Linker Map File - Created Sun Dec 13 15:19:09 2015
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x00019c
+.config_2007_PROGRAMA CORREGIDO.O       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x0000cd      
+                            0x002007    0x002007      
+            207 out of 1094 program addresses used, program memory utilization is 18%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+              Antirrebote   0x0000a4    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                  Check_1   0x00000c    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                  Check_2   0x000010    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                  Check_3   0x000014    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+         Comprobar_Estado   0x0000ad    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                 Funcion1   0x00001a    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                 Funcion2   0x000026    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                 Funcion3   0x000050    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                 Funcion4   0x00007a    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                   Inicio   0x000000    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                 Programa   0x000008    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+    R1Decima_BucleExterno   0x0000c4    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+   R1Decima_BucleExterno2   0x0000c2    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+    R1Decima_BucleInterno   0x0000c6    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+              Retardo_10s   0x0000b8    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+          Retardo_1Decima   0x0000c1    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+               Retardo_1s   0x0000be    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+              Retardo_20s   0x0000b6    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+               Retardo_2s   0x0000bc    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+            Retardo_500ms   0x0000c0    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+               Retardo_5s   0x0000ba    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                   Inicio   0x000000    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                 Programa   0x000008    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                  Check_1   0x00000c    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                  Check_2   0x000010    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                  Check_3   0x000014    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                 Funcion1   0x00001a    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                 Funcion2   0x000026    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                 Funcion3   0x000050    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+                 Funcion4   0x00007a    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+              Antirrebote   0x0000a4    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+         Comprobar_Estado   0x0000ad    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+              Retardo_20s   0x0000b6    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+              Retardo_10s   0x0000b8    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+               Retardo_5s   0x0000ba    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+               Retardo_2s   0x0000bc    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+               Retardo_1s   0x0000be    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+            Retardo_500ms   0x0000c0    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+          Retardo_1Decima   0x0000c1    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+   R1Decima_BucleExterno2   0x0000c2    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+    R1Decima_BucleExterno   0x0000c4    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+    R1Decima_BucleInterno   0x0000c6    program     static C:\Users\User\Documents\Proyectos 16F84A\Programa corregido.asm
+
+

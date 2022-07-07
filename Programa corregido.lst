@@ -1,0 +1,469 @@
+MPASM  5.47            PROGRAMA CORREGIDO.ASM   12-13-2015  15:19:07         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001         list p=16f84
+                      00002         include p16f84a.inc
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC16F84A processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2012 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00208         LIST
+2007   3FF1           00003         __config _XT_OSC & _WDT_OFF & _PWRTE_ON
+                      00004 
+                      00005         errorlevel -302                 ; Para omitir los mensajes por selección de bancos.
+                      00006 
+                      00007         CBLOCK 0x0c
+  0000000C            00008         R_ContA                                         ; Contadores para los retardos.
+  0000000D            00009         R_ContB
+  0000000E            00010         R_ContC
+                      00011         ENDC
+                      00012 
+0000                  00013         org             0x00                    ; Vector de Reset
+                      00014 
+0000                  00015 Inicio
+0000   1683           00016         bsf             STATUS,RP0              ; Seleccionar el banco 1        
+0001   3010           00017         movlw   b'10000'                ; Configuro puerto A como salida
+0002   0085           00018         movwf   TRISA           
+0003   300F           00019         movlw   b'00001111'             ; Parte alta del Puerto B como salidas y parte baja como entrada
+                            s.
+0004   0086           00020         movwf   TRISB
+0005   1283           00021         bcf             STATUS,RP0              ; Seleccionar banco 0
+0006   0185           00022         clrf    PORTA                   ; Limpio puerto A
+0007   0186           00023         clrf    PORTB                   ; Limpiar Puerto B
+                      00024 
+0008                  00025 Programa
+0008   1806           00026         btfsc   PORTB,0                 ; Verificar Pulsador en RB0 (Salta si es 0)
+0009   280C           00027         goto    Check_1                 ; Si no es 0 salta a Check_1 para comprobar el siguiente pulsado
+                            r.
+000A   20A4           00028         call    Antirrebote             ; Ir a rutina antirrebote
+000B   201A           00029         call    Funcion1                        ; Ir a rutina de encendido de LED's
+000C                  00030 Check_1
+000C   1886           00031         btfsc   PORTB,1                 ; Igual a lo comentado arriba para los siguientes pulsadores.
+000D   2810           00032         goto    Check_2
+000E   20A4           00033         call    Antirrebote
+000F   2026           00034         call    Funcion2
+0010                  00035 Check_2
+0010   1906           00036         btfsc   PORTB,2
+0011   2814           00037         goto    Check_3
+0012   20A4           00038         call    Antirrebote
+0013   2050           00039         call    Funcion3
+0014                  00040 Check_3
+0014   1986           00041         btfsc   PORTB,3
+0015   2808           00042         goto    Programa
+MPASM  5.47            PROGRAMA CORREGIDO.ASM   12-13-2015  15:19:07         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0016   20A4           00043         call    Antirrebote
+0017   207A           00044         call    Funcion4
+0018   20A4           00045         call    Antirrebote
+                      00046 
+0019   2808           00047         goto    Programa
+                      00048 
+001A                  00049 Funcion1
+001A   30F0           00050         movlw   b'11110000'             ; Poner en 1 los bits 4,5,6 y 7 del puerto B
+001B   0086           00051         movwf   PORTB
+001C   301F           00052         movlw   b'11111'                ; Poner en 1 los bits 0,1,2 y 3 del puerto A
+001D   0085           00053         movwf   PORTA
+001E   20BC           00054         call Retardo_2s
+001F   3000           00055         movlw   b'00000000'             ; Poner en 0 el puerto B
+0020   0086           00056         movwf   PORTB
+0021   3010           00057         movlw   b'10000'                ; Poner en 0 el puerto A
+0022   0085           00058         movwf   PORTA
+0023   20BC           00059         call Retardo_2s
+0024   281A           00060         goto Funcion1
+0025   0008           00061         return
+                      00062 
+0026                  00063 Funcion2
+0026   3030           00064         movlw   b'00110000'             ; Poner en 1 los bits 4 y 5 del puerto B
+0027   0086           00065         movwf PORTB
+0028   3013           00066         movlw   b'10011'                ; Poner en 1 los bits 0 y 1 del puerto A
+0029   0085           00067         movwf   PORTA
+002A   20C0           00068         call Retardo_500ms
+002B   3000           00069         movlw   b'00000000'             ; Poner en 0 el puerto B
+002C   0086           00070         movwf PORTB
+002D   3010           00071         movlw   b'10000'                ; Poner en 0 el puerto A
+002E   0085           00072         movwf   PORTA
+002F   20C0           00073         call Retardo_500ms
+0030   3030           00074         movlw   b'00110000'             
+0031   0086           00075         movwf PORTB
+0032   3013           00076         movlw   b'10011'
+0033   0085           00077         movwf   PORTA
+0034   20C0           00078         call Retardo_500ms
+0035   3000           00079         movlw   b'00000000'             
+0036   0086           00080         movwf PORTB
+0037   3010           00081         movlw   b'10000'
+0038   0085           00082         movwf   PORTA
+0039   20BE           00083         call Retardo_1s
+003A   30C0           00084         movlw   b'11000000'             
+003B   0086           00085         movwf PORTB
+003C   301C           00086         movlw   b'11100'
+003D   0085           00087         movwf   PORTA
+003E   20C0           00088         call Retardo_500ms
+003F   3000           00089         movlw   b'00000000'             
+0040   0086           00090         movwf PORTB
+0041   3010           00091         movlw   b'10000'
+0042   0085           00092         movwf   PORTA
+0043   20C0           00093         call Retardo_500ms
+0044   30C0           00094         movlw   b'11000000'             
+0045   0086           00095         movwf PORTB
+MPASM  5.47            PROGRAMA CORREGIDO.ASM   12-13-2015  15:19:07         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0046   301C           00096         movlw   b'11100'
+0047   0085           00097         movwf   PORTA
+0048   20C0           00098         call Retardo_500ms
+0049   3000           00099         movlw   b'00000000'             
+004A   0086           00100         movwf PORTB
+004B   3010           00101         movlw   b'10000'
+004C   0085           00102         movwf   PORTA
+004D   20BE           00103         call Retardo_1s
+004E   2826           00104         goto Funcion2
+004F   0008           00105         return
+                      00106 
+0050                  00107 Funcion3
+0050   3010           00108         movlw   b'00010000'                     ; Poner en 1 el bit 4 del puerto B
+0051   0086           00109         movwf   PORTB
+0052   3011           00110         movlw   b'10001'                        ; Poner en 1 el bit 0 del puerto A
+0053   0085           00111         movwf   PORTA
+0054   20BE           00112         call Retardo_1s
+0055   3000           00113         movlw   b'00000000'                     ; Poner en 0 el puerto B
+0056   0086           00114         movwf   PORTB
+0057   3010           00115         movlw   b'10000'                        ; Poner en 0 el puerto A
+0058   0085           00116         movwf   PORTA
+0059   20C0           00117         call Retardo_500ms
+005A   3020           00118         movlw   b'00100000'     
+005B   0086           00119         movwf   PORTB
+005C   3012           00120         movlw   b'10010'
+005D   0085           00121         movwf   PORTA
+005E   20BE           00122         call Retardo_1s
+005F   3000           00123         movlw   b'00000000'             
+0060   0086           00124         movwf   PORTB
+0061   3010           00125         movlw   b'10000'
+0062   0085           00126         movwf   PORTA
+0063   20C0           00127         call Retardo_500ms
+0064   3040           00128         movlw   b'01000000'     
+0065   0086           00129         movwf   PORTB
+0066   3014           00130         movlw   b'10100'
+0067   0085           00131         movwf   PORTA
+0068   20BE           00132         call Retardo_1s
+0069   3000           00133         movlw   b'00000000'             
+006A   0086           00134         movwf   PORTB
+006B   3010           00135         movlw   b'10000'
+006C   0085           00136         movwf   PORTA
+006D   20C0           00137         call Retardo_500ms
+006E   3080           00138         movlw   b'10000000'     
+006F   0086           00139         movwf   PORTB
+0070   3018           00140         movlw   b'11000'
+0071   0085           00141         movwf   PORTA
+0072   20BE           00142         call Retardo_1s
+0073   3000           00143         movlw   b'00000000'             
+0074   0086           00144         movwf   PORTB
+0075   3010           00145         movlw   b'10000'
+0076   0085           00146         movwf   PORTA
+0077   20C0           00147         call Retardo_500ms
+0078   2850           00148         goto Funcion3
+MPASM  5.47            PROGRAMA CORREGIDO.ASM   12-13-2015  15:19:07         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0079   0008           00149         return
+                      00150 
+007A                  00151 Funcion4
+007A   3030           00152         movlw   b'00110000'                     ; Poner en 1 los bits 4 y 5 del puerto B
+007B   0086           00153         movwf   PORTB
+007C   3010           00154         movlw   b'10000'                        ; Poner en 0 el puerto A
+007D   0085           00155         movwf   PORTA
+007E   20BE           00156         call Retardo_1s
+007F   3000           00157         movlw   b'00000000'                     ; Poner en 0 el puerto B
+0080   0086           00158         movwf   PORTB
+0081   3010           00159         movlw   b'10000'                        ; Poner en 0 el puerto A
+0082   0085           00160         movwf   PORTA
+0083   20C0           00161         call Retardo_500ms
+0084   30C0           00162         movlw   b'11000000'     
+0085   0086           00163         movwf   PORTB
+0086   3010           00164         movlw   b'10000'
+0087   0085           00165         movwf   PORTA
+0088   20BE           00166         call Retardo_1s
+0089   3000           00167         movlw   b'00000000'     
+008A   0086           00168         movwf   PORTB
+008B   3010           00169         movlw   b'10000'
+008C   0085           00170         movwf   PORTA
+008D   20C0           00171         call Retardo_500ms
+008E   3000           00172         movlw   b'00000000'     
+008F   0086           00173         movwf   PORTB
+0090   3013           00174         movlw   b'10011'
+0091   0085           00175         movwf   PORTA
+0092   20BE           00176         call Retardo_1s
+0093   3000           00177         movlw   b'00000000'     
+0094   0086           00178         movwf   PORTB
+0095   3010           00179         movlw   b'10000'
+0096   0085           00180         movwf   PORTA
+0097   20C0           00181         call Retardo_500ms
+0098   3000           00182         movlw   b'00000000'     
+0099   0086           00183         movwf   PORTB
+009A   301C           00184         movlw   b'11100'
+009B   0085           00185         movwf   PORTA
+009C   20BE           00186         call Retardo_1s
+009D   3000           00187         movlw   b'00000000'     
+009E   0086           00188         movwf   PORTB
+009F   3010           00189         movlw   b'10000'
+00A0   0085           00190         movwf   PORTA
+00A1   20C0           00191         call Retardo_500ms
+00A2   287A           00192         goto Funcion4
+00A3   0008           00193         return
+                      00194 
+                      00195 ; Rutina para esperar hasta que se suelte el pulsador activo.
+00A4                  00196 Antirrebote
+00A4   1C06           00197         btfss   PORTB,0                 ; Verifica el estado de RB0 (Salta si es 1)
+00A5   28A4           00198         goto    Antirrebote             ; Si no es 1, hacer un bucle hasta que sea 1
+00A6   1C86           00199         btfss   PORTB,1                 ; Igual a lo comentado arriba.
+00A7   28A4           00200         goto    Antirrebote
+00A8   1D06           00201         btfss   PORTB,2
+MPASM  5.47            PROGRAMA CORREGIDO.ASM   12-13-2015  15:19:07         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00A9   28A4           00202         goto    Antirrebote
+00AA   1D86           00203         btfss   PORTB,3
+00AB   28A4           00204         goto    Antirrebote
+00AC   0008           00205         return
+                      00206 
+                      00207 ;Rutina para comprobar el estado de los pulsadores dentro de la rutina de retardo
+00AD                  00208 Comprobar_Estado
+00AD   1C06           00209         btfss PORTB,0
+00AE   280C           00210         goto Check_1
+00AF   1C86           00211         btfss PORTB,1
+00B0   2810           00212         goto Check_2
+00B1   1D06           00213         btfss PORTB,2
+00B2   2814           00214         goto Check_3
+00B3   1D86           00215         btfss PORTB,3
+00B4   2808           00216         goto Programa
+00B5   0008           00217         return
+                      00218 
+00B6                  00219 Retardo_20s                                             ; La llamada "call" aporta 2 ciclos máquina.
+00B6   30C8           00220         movlw   d'200'                          ; Aporta 1 ciclo máquina. Este es el valor de "N".
+00B7   28C1           00221         goto    Retardo_1Decima         ; Aporta 2 ciclos máquina.
+00B8                  00222 Retardo_10s                                             ; La llamada "call" aporta 2 ciclos máquina.
+00B8   3064           00223         movlw   d'100'                          ; Aporta 1 ciclo máquina. Este es el valor de "N".
+00B9   28C1           00224         goto    Retardo_1Decima         ; Aporta 2 ciclos máquina.
+00BA                  00225 Retardo_5s                                              ; La llamada "call" aporta 2 ciclos máquina.
+00BA   3032           00226         movlw   d'50'                           ; Aporta 1 ciclo máquina. Este es el valor de "N".
+00BB   28C1           00227         goto    Retardo_1Decima         ; Aporta 2 ciclos máquina.
+00BC                  00228 Retardo_2s                                              ; La llamada "call" aporta 2 ciclos máquina.
+00BC   3014           00229         movlw   d'20'                           ; Aporta 1 ciclo máquina. Este es el valor de "N".
+00BD   28C1           00230         goto    Retardo_1Decima         ; Aporta 2 ciclos máquina.
+00BE                  00231 Retardo_1s                                              ; La llamada "call" aporta 2 ciclos máquina.
+00BE   300A           00232         movlw   d'10'                           ; Aporta 1 ciclo máquina. Este es el valor de "N".
+00BF   28C1           00233         goto    Retardo_1Decima         ; Aporta 2 ciclos máquina.
+00C0                  00234 Retardo_500ms                                   ; La llamada "call" aporta 2 ciclos máquina.
+00C0   3005           00235         movlw   d'5'                            ; Aporta 1 ciclo máquina. Este es el valor de "N".
+                      00236 ;
+                      00237 ; El próximo bloque "Retardo_1Decima" tarda:
+                      00238 ; 1 + N + N + MxN + MxN + KxMxN + (K-1)xMxN + MxNx2 + (K-1)xMxNx2 +
+                      00239 ;   + (M-1)xN + Nx2 + (M-1)xNx2 + (N-1) + 2 + (N-1)x2 + 2 =
+                      00240 ; = (2 + 4M + 4MN + 4KM) ciclos máquina. Para K=249, M=100 y N=1 supone 100011
+                      00241 ; ciclos máquina que a 4 MHz son 100011 µs = 100 ms = 0,1 s = 1 décima de segundo.
+                      00242 ;
+00C1                  00243 Retardo_1Decima
+00C1   008E           00244         movwf   R_ContC                         ; Aporta 1 ciclo máquina.
+00C2                  00245 R1Decima_BucleExterno2
+00C2   301E           00246         movlw   d'30'                           ; Aporta Nx1 ciclos máquina. Este es el valor de "M".
+00C3   008D           00247         movwf   R_ContB                         ; Aporta Nx1 ciclos máquina.
+00C4                  00248 R1Decima_BucleExterno
+00C4   30DE           00249         movlw   d'222'                          ; Aporta MxNx1 ciclos máquina. Este es el valor de "K".
+00C5   008C           00250         movwf   R_ContA                         ; Aporta MxNx1 ciclos máquina.
+00C6                  00251 R1Decima_BucleInterno          
+00C6   20AD           00252         call Comprobar_Estado                                   ; Aporta KxMxNx12 ciclos máquina.
+00C7   0B8C           00253         decfsz  R_ContA,F                       ; (K-1)xMxNx1 cm (si no salta) + MxNx2 cm (al saltar).
+00C8   28C6           00254         goto    R1Decima_BucleInterno   ; Aporta (K-1)xMxNx2 ciclos máquina.
+MPASM  5.47            PROGRAMA CORREGIDO.ASM   12-13-2015  15:19:07         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00C9   0B8D           00255         decfsz  R_ContB,F                       ; (M-1)xNx1 cm (cuando no salta) + Nx2 cm (al saltar).
+00CA   28C4           00256         goto    R1Decima_BucleExterno   ; Aporta (M-1)xNx2 ciclos máquina.
+00CB   0B8E           00257         decfsz  R_ContC,F                       ; (N-1)x1 cm (cuando no salta) + 2 cm (al saltar).
+00CC   28C2           00258         goto    R1Decima_BucleExterno2  ; Aporta (N-1)x2 ciclos máquina.
+00CD   0008           00259         return                                          ; El salto del retorno aporta 2 ciclos máquina.
+                      00260 
+                      00261         end
+MPASM  5.47            PROGRAMA CORREGIDO.ASM   12-13-2015  15:19:07         PAGE  7
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+Antirrebote                       000000A4
+C                                 00000000
+Check_1                           0000000C
+Check_2                           00000010
+Check_3                           00000014
+Comprobar_Estado                  000000AD
+DC                                00000001
+EEADR                             00000009
+EECON1                            00000088
+EECON2                            00000089
+EEDATA                            00000008
+EEIE                              00000006
+EEIF                              00000004
+F                                 00000001
+FSR                               00000004
+Funcion1                          0000001A
+Funcion2                          00000026
+Funcion3                          00000050
+Funcion4                          0000007A
+GIE                               00000007
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IRP                               00000007
+Inicio                            00000000
+NOT_PD                            00000003
+NOT_RBPU                          00000007
+NOT_TO                            00000004
+OPTION_REG                        00000081
+PCL                               00000002
+PCLATH                            0000000A
+PORTA                             00000005
+PORTB                             00000006
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+Programa                          00000008
+R1Decima_BucleExterno             000000C4
+R1Decima_BucleExterno2            000000C2
+R1Decima_BucleInterno             000000C6
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+MPASM  5.47            PROGRAMA CORREGIDO.ASM   12-13-2015  15:19:07         PAGE  8
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RD                                00000000
+RP0                               00000005
+RP1                               00000006
+R_ContA                           0000000C
+R_ContB                           0000000D
+R_ContC                           0000000E
+Retardo_10s                       000000B8
+Retardo_1Decima                   000000C1
+Retardo_1s                        000000BE
+Retardo_20s                       000000B6
+Retardo_2s                        000000BC
+Retardo_500ms                     000000C0
+Retardo_5s                        000000BA
+STATUS                            00000003
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_CONFIG                           00002007
+_CP_OFF                           00003FFF
+_CP_ON                            0000000F
+_DEVID1                           00002006
+_FOSC_EXTRC                       00003FFF
+_FOSC_HS                          00003FFE
+_FOSC_LP                          00003FFC
+MPASM  5.47            PROGRAMA CORREGIDO.ASM   12-13-2015  15:19:07         PAGE  9
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_FOSC_XT                          00003FFD
+_HS_OSC                           00003FFE
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_LP_OSC                           00003FFC
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FF7
+_RC_OSC                           00003FFF
+_WDTE_OFF                         00003FFB
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FFB
+_WDT_ON                           00003FFF
+_XT_OSC                           00003FFD
+__16F84A                          00000001
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXXXXXXXX-- ---------------- ---------------- ----------------
+2000 : -------X-------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   206
+Program Memory Words Free:   818
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     2 suppressed
+
+
